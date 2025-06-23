@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- encoders are assigned the type
+             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.example.bootJPA" level="INFO" appender-ref="STDOUT"/>
+    <logger name="jdbc" level="INFO" appender-ref="STDOUT"/>
+    <logger name="jdbc.connecting" level="OFF" appender-ref="STDOUT"/>
+    <logger name="jdbc.sqlonly" level="INFO" appender-ref="STDOUT"/>
+    <logger name="jdbc.resultsettable" level="INFO" appender-ref="STDOUT"/>
+
+    <!-- spring logger -->
+    <logger name="org.springframework" level="ERROR" appender-ref="STDOUT"/>
+
+    <!-- thymeleaf logger -->
+    <logger name="org.thymeleaf" level="WARN" />
+    <logger name="org.thymeleaf.spring5" level="WARN" />
+    <logger name="org.attoparser" level="WARN" />
+
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>
