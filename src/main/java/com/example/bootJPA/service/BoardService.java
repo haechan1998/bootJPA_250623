@@ -2,13 +2,14 @@ package com.example.bootJPA.service;
 
 import com.example.bootJPA.dto.BoardDTO;
 import com.example.bootJPA.entity.Board;
+import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 public interface BoardService {
 
     // 추상 메서드만 가능한 인터페이스
     // 메서드가 default (접근제어자) 구현 가능.
-    
-    Long insert(BoardDTO boardDTO);
     
     /*
     * BoardDTO => Board 객체로 변환
@@ -33,15 +34,28 @@ public interface BoardService {
     * 반대로 Board 테이블에서 가져온 객체를 BoardDTO 화면에 뿌리기 위한 객체로 변환
     * */
 
-    default BoardDTO convertEntityToDto(Board board){
+    default BoardDTO convertEntityToDto(Board board) {
         return BoardDTO.builder()
                 .bno(board.getBno())
                 .title(board.getTitle())
                 .writer(board.getWriter())
                 .content(board.getContent())
-                .regDate(board.getRegDate())
                 .modDate(board.getModDate())
+                .regDate(board.getRegDate())
                 .build();
     }
-    
+
+    Long insert(BoardDTO boardDTO);
+
+    List<BoardDTO> getBoardList();
+
+    Page<BoardDTO> getPageBoardList(int pageNo);
+
+    BoardDTO getDetail(Long bno);
+
+    void boardDelete(Long bno);
+
+    void boardModify(BoardDTO boardDTO);
+
+    Page<BoardDTO> getList(int pageNo, String type, String keyword);
 }

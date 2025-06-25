@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}"
+>
+
+<div class="container-md" layout:fragment="content">
+  <h1>NO.[[${boardDTO.bno}]] Board Detail Page</h1>
+  <form action="/board/modify" method="post" id="modForm">
+    <input type="hidden" name="bno" th:value="${boardDTO.bno}">
+    <div class="mb-3">
+      <label for="t" class="form-label">제목</label>
+      <input type="text" class="form-control" name="title" th:value="${boardDTO.title}" id="t" readonly>
+    </div>
+
+    <div class="mb-3">
+      <label for="r" class="form-label">작성일</label>
+      <input type="text" class="form-control" th:value="${boardDTO.regDate}" id="r" readonly>
+    </div>
+
+    <div class="mb-3">
+      <label for="m" class="form-label">수정일</label>
+      <input type="text" class="form-control" th:value="${boardDTO.modDate}" id="m" readonly>
+    </div>
+
+    <div class="mb-3">
+      <label for="w" class="form-label">작성자</label>
+      <input type="text" class="form-control" name="writer" th:value="${boardDTO.writer}" id="w" readonly>
+    </div>
+
+    <div class="mb-3">
+      <label for="c" class="form-label">내용</label>
+      <textarea type="text" class="form-control" name="content" rows="5" id="c" readonly>[[${boardDTO.content}]]</textarea>
+    </div>
+
+    <button type="button" id="listBtn" class="btn btn-primary">목록</button>
+    <button type="button" id="modBtn" class="btn btn-info">수정</button>
+    <button type="button" id="delBtn" class="btn btn-danger">삭제</button>
+
+  </form>
+
+  <!-- comment line -->
+  <!-- post -->
+    <div class="input-group mb-3" style="margin-top:20px">
+      <span class="input-group-text" id="cmtWriter">tester</span>
+      <input type="text" class="form-control" id="cmtText" placeholder="comment..." aria-label="Username" aria-describedby="basic-addon1">
+      <button type="button" id="cmtAddBtn" class="btn btn-secondary">post</button>
+    </div>
+
+  <!-- print -->
+  <ul class="list-group list-group-flush" id="cmtListArea">
+  </ul>
+
+  <!-- 댓글 더보기 버튼 : 한 페이지에 5개 댓글 표시 더 있으면 더보기 버튼 활성화 / 없으면 사라짐-->
+  <div class="mb-3">
+    <button type="button" id="moreBtn" data-page="1" class="btn btn-secondary" style="visibility: hidden">더보기 +</button>
+  </div>
+
+  <!-- 수정 test -->
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="cno-writer">Writer</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="text" class="form-control" id="cmtTextMod">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+          <button type="button" class="btn btn-primary" id="cmtModBtn">수정</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <th:block th:with="bdto=${boardDTO}">
+    <script th:inline="javascript">
+      const bnoValue = [[${bdto.bno}]];
+    </script>
+  </th:block>
+  <script th:src="@{/js/boardComment.js}"></script>
+  <script th:src="@{/js/boardDetail.js}"></script>
+  <script>
+    spreadCommentList(bnoValue);
+  </script>
+
+</div>
