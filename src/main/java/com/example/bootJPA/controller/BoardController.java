@@ -1,6 +1,9 @@
 package com.example.bootJPA.controller;
 
 import com.example.bootJPA.dto.BoardDTO;
+import com.example.bootJPA.dto.BoardFileDTO;
+import com.example.bootJPA.dto.FileDTO;
+import com.example.bootJPA.handler.FileHandler;
 import com.example.bootJPA.handler.PagingHandler;
 import com.example.bootJPA.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -8,11 +11,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -21,10 +24,31 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class BoardController {
 
     private final BoardService boardService;
+    private final FileHandler fileHandler;
 
-    @GetMapping("register")
+    @GetMapping("/register")
     public void register(){}
 
+    @PostMapping("/register")
+    public String register(
+            BoardDTO boardDTO,
+            @RequestParam(name = "files", required = false) MultipartFile[] files
+    ){
+        // 파일이 있는 register
+
+        List<FileDTO> fileList = null;
+        if(files != null && files[0].getSize() > 0){
+            // 파일 핸들러 작업
+            fileList = fileHandler.uploadFiles(files);
+        }
+        log.info(">>>> fileList > {}", fileList);
+        Long bno = boardService.insert(new BoardFileDTO(boardDTO, fileList));
+        return "redirect:/board/list";
+
+    }
+
+    /*
+    // 파일이 없을 경우 register
     @PostMapping("register")
     public String register(BoardDTO boardDTO){
         // insert, update, delete => return 1 row (성공한 row 의 개수)
@@ -36,6 +60,7 @@ public class BoardController {
 
         return "index";
     }
+    */
 
     /*
     @GetMapping("list")
@@ -96,9 +121,9 @@ public class BoardController {
     public void boardDetail(Model model, @RequestParam("bno") Long bno){
 
         log.info(">>> bno > {}",bno);
-        BoardDTO boardDTO = boardService.getDetail(bno);
+        BoardFileDTO boardFileDTO = boardService.getDetail(bno);
 
-        model.addAttribute("boardDTO", boardDTO);
+        model.addAttribute("boardFileDTO", boardFileDTO);
 
     }
 
@@ -111,12 +136,29 @@ public class BoardController {
     }
 
     @PostMapping("modify")
-    public String boardModify(BoardDTO boardDTO, RedirectAttributes redirectAttributes){
+    public String boardModify(
+            BoardDTO boardDTO,
+            RedirectAttributes redirectAttributes,
+            @RequestParam(name = "files", required = false) MultipartFile[] files
+    ){
+        List<FileDTO> fileList = null;
+        if(files != null && files[0].getSize() > 0){
+            fileList = fileHandler.uploadFiles(files);
+        }
 
-        boardService.boardModify(boardDTO);
+        BoardFileDTO boardFileDTO = new BoardFileDTO(boardDTO, fileList);
+
+        boardService.boardModify(boardFileDTO);
         redirectAttributes.addAttribute("bno", boardDTO.getBno());
 
         return "redirect:/board/detail";
+    }
+
+    @ResponseBody
+    @DeleteMapping("/file/{uuid}")
+    public String fileRemove(@PathVariable("uuid") String uuid){
+        long bno = boardService.fileRemove(uuid);
+        return bno > 0 ? "1" : "0";
     }
 
 

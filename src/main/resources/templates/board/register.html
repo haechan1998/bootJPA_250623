@@ -7,7 +7,7 @@
 
 <div class="container-md" layout:fragment="content">
   <h1>Board Register Page</h1>
-  <form action="/board/register" method="post">
+  <form action="/board/register" method="post" enctype="multipart/form-data">
 
     <div class="mb-3">
       <label for="t" class="form-label">제목</label>
@@ -24,6 +24,17 @@
       <textarea type="text" class="form-control" name="content" rows="5" id="c" placeholder="content.."></textarea>
     </div>
 
+
+    <!--file 추가 라인-->
+    <div class="mb-3">
+      <input type="file" class="form-control" name="files" id="file" multiple="multiple" style="display:none">
+      <button type="button" class="btn btn-success" id="trigger">file</button>
+    </div>
+    <!--file 출력 라인-->
+    <div class="mb-3" id="fileList">
+    </div>
+
     <button type="submit" class="btn btn-primary" id="regBtn">저장</button>
+    <script th:src="@{/js/boardRegister.js}"></script>
   </form>
 </div>

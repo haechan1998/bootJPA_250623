@@ -5,9 +5,10 @@
       layout:decorate="~{layout/layout}"
 >
 
-<div class="container-md" layout:fragment="content">
+<div class="container-md" layout:fragment="content" th:with="boardDTO=${boardFileDTO.boardDTO}">
   <h1>NO.[[${boardDTO.bno}]] Board Detail Page</h1>
-  <form action="/board/modify" method="post" id="modForm">
+
+  <form action="/board/modify" method="post" id="modForm" enctype="multipart/form-data">
     <input type="hidden" name="bno" th:value="${boardDTO.bno}">
     <div class="mb-3">
       <label for="t" class="form-label">제목</label>
@@ -16,12 +17,12 @@
 
     <div class="mb-3">
       <label for="r" class="form-label">작성일</label>
-      <input type="text" class="form-control" th:value="${boardDTO.regDate}" id="r" readonly>
+      <input type="text" class="form-control" th:value="${boardDTO.detailRegTime}" id="r" readonly>
     </div>
 
     <div class="mb-3">
       <label for="m" class="form-label">수정일</label>
-      <input type="text" class="form-control" th:value="${boardDTO.modDate}" id="m" readonly>
+      <input type="text" class="form-control" th:value="${boardDTO.detailModTime}" id="m" readonly>
     </div>
 
     <div class="mb-3">
@@ -34,13 +35,62 @@
       <textarea type="text" class="form-control" name="content" rows="5" id="c" readonly>[[${boardDTO.content}]]</textarea>
     </div>
 
+
+
+
+  <!-- 파일 출력 라인 시작-->
+  <div id="fileList" class="mb-3">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item fileBno" th:each="fvo:${boardFileDTO.fileList}">
+        <div th:if="${fvo.fileType == 1}" class="mb-3">
+          <!--
+           이미지 경로 양 옆에 절댓값이 들어가는 이유는
+           webMvcConfig 에서 설정한 절대경로인 /upload 인식하기 위해서이다.
+
+           즉 사용하게 되면 루트 디렉터리 기준의 절대 경로(/upload/**)를 인지하여,
+           서버 도메인 기준으로 정해진위치에서 파일을 찾아 올 수 있다.
+           -->
+          <img th:src="@{|/upload/${fvo.saveDir}/${fvo.uuid}_${fvo.fileName}|}" alt="사진">
+        </div>
+        <div th:unless="${fvo.fileType == 1}" class="mb-3">
+          <!--/*icon*/-->
+          <a th:href="@{|/upload/${fvo.saveDir}/${fvo.uuid}_${fvo.fileName}|}"
+             th:download="${fvo.fileName}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-down-circle" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293z"/>
+            </svg>
+          </a>
+        </div>
+
+        <div class="mb-3">
+          <div class="fw-bold">[[${fvo.fileName}]]</div>
+          [[${fvo.regTimeOrDate}]]
+        </div>
+          <span class="badge text-bg-primary rounded-pill">[[${fvo.fileSize}]]Bytes</span>
+        <button type="button" th:data-uuid="${fvo.uuid}" class="btn btn-outline-danger file-x" style="visibility:hidden">파일삭제</button>
+      </li>
+    </ul>
+  </div>
+
+  <!-- file 추가 -->
+  <div class="mb-3">
+    <input type="file" class="form-control" name="files" id="file" multiple style="display:none;">
+    <button type="button" class="btn btn-outline-success" id="trigger" disabled>파일</button>
+  </div>
+  <!-- file 표시 -->
+  <div class="mb-3" id="fileZone">
+  </div>
+
+  <!-- 파일 출력 라인 끝-->
+
     <button type="button" id="listBtn" class="btn btn-primary">목록</button>
     <button type="button" id="modBtn" class="btn btn-info">수정</button>
     <button type="button" id="delBtn" class="btn btn-danger">삭제</button>
 
   </form>
 
-  <!-- comment line -->
+
+  <!-- comment line start-->
   <!-- post -->
     <div class="input-group mb-3" style="margin-top:20px">
       <span class="input-group-text" id="cmtWriter">tester</span>
@@ -77,8 +127,11 @@
       </div>
     </div>
   </div>
+<!-- comment line end -->
 
 
+
+<!--script line start-->
   <th:block th:with="bdto=${boardDTO}">
     <script th:inline="javascript">
       const bnoValue = [[${bdto.bno}]];
@@ -89,5 +142,6 @@
   <script>
     spreadCommentList(bnoValue);
   </script>
+<!--script line end-->
 
 </div>

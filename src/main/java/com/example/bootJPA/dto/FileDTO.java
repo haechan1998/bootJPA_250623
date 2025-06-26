@@ -4,7 +4,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-import static com.example.bootJPA.dto.TimeConverter.detailTimeOrDate;
 import static com.example.bootJPA.dto.TimeConverter.timeOrDate;
 
 @Getter
@@ -13,11 +12,14 @@ import static com.example.bootJPA.dto.TimeConverter.timeOrDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BoardDTO {
-    private Long bno;
-    private String title;
-    private String writer;
-    private String content;
+public class FileDTO {
+
+    private String uuid;
+    private String saveDir;
+    private String fileName;
+    private int fileType;
+    private long bno;
+    private long fileSize;
     private LocalDateTime regDate, modDate;
 
     public String getRegTimeOrDate(){
@@ -31,16 +33,4 @@ public class BoardDTO {
         return timeOrDate(modDate);
     }
 
-    public String getDetailRegTime(){
-        return detailTimeOrDate(regDate);
-    }
-
-    public String getDetailModTime(){
-        if(regDate.equals(modDate)){
-            return "-";
-        }
-        return detailTimeOrDate(modDate);
-    }
-
 }
-

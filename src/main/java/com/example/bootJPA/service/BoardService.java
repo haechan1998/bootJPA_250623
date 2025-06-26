@@ -1,7 +1,10 @@
 package com.example.bootJPA.service;
 
 import com.example.bootJPA.dto.BoardDTO;
+import com.example.bootJPA.dto.BoardFileDTO;
+import com.example.bootJPA.dto.FileDTO;
 import com.example.bootJPA.entity.Board;
+import com.example.bootJPA.entity.File;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -45,17 +48,43 @@ public interface BoardService {
                 .build();
     }
 
-    Long insert(BoardDTO boardDTO);
+    default File convertDtoToEntity(FileDTO fileDTO){
+        return File.builder()
+                .uuid(fileDTO.getUuid())
+                .fileSize(fileDTO.getFileSize())
+                .fileType(fileDTO.getFileType())
+                .fileName(fileDTO.getFileName())
+                .bno(fileDTO.getBno())
+                .saveDir(fileDTO.getSaveDir())
+                .build();
+    }
+
+    default FileDTO convertEntityToDto(File file){
+        return FileDTO.builder()
+                .uuid(file.getUuid())
+                .saveDir(file.getSaveDir())
+                .fileType(file.getFileType())
+                .fileName(file.getFileName())
+                .bno(file.getBno())
+                .fileSize(file.getFileSize())
+                .regDate(file.getRegDate())
+                .modDate(file.getModDate())
+                .build();
+    }
+
+    Long insert(BoardFileDTO boardFileDTO);
 
     List<BoardDTO> getBoardList();
 
     Page<BoardDTO> getPageBoardList(int pageNo);
 
-    BoardDTO getDetail(Long bno);
+    BoardFileDTO getDetail(Long bno);
 
     void boardDelete(Long bno);
 
-    void boardModify(BoardDTO boardDTO);
+    void boardModify(BoardFileDTO boardFileDTO);
 
     Page<BoardDTO> getList(int pageNo, String type, String keyword);
+
+    long fileRemove(String uuid);
 }

@@ -21,7 +21,6 @@ class BootJpaApplicationTests {
 					.writer("tester" + ((int)(Math.random()*100)+1) + "@test.com")
 					.content(("test content" + i))
 					.build();
-			boardService.insert(boardDTO);
 		}
 
 	}

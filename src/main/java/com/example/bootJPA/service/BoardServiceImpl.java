@@ -1,8 +1,12 @@
 package com.example.bootJPA.service;
 
 import com.example.bootJPA.dto.BoardDTO;
+import com.example.bootJPA.dto.BoardFileDTO;
+import com.example.bootJPA.dto.FileDTO;
 import com.example.bootJPA.entity.Board;
+import com.example.bootJPA.entity.File;
 import com.example.bootJPA.repository.BoardRepository;
+import com.example.bootJPA.repository.FileRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,13 +25,22 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService{
     private final BoardRepository boardRepository; // mapper 는 mybatis 에서 사용하는 개념.
+    private final FileRepository fileRepository;
 
+    @Transactional
     @Override
-    public Long insert(BoardDTO boardDTO) {
+    public Long insert(BoardFileDTO boardFileDTO) {
         // 저장 객체는 Board
         // save() : 저장
         // entity 객체를 파라미터로 전송
-        return boardRepository.save(convertDtoToEntity(boardDTO)).getBno();
+        BoardDTO boardDTO = boardFileDTO.getBoardDTO();
+        Long bno =  boardRepository.save(convertDtoToEntity(boardDTO)).getBno();
+        log.info(">> boardimpl BoardDto > {}", boardDTO);
+
+        bno = fileSave(boardFileDTO.getFileList(), bno);
+
+        return bno;
+
     }
 
     @Override
@@ -84,8 +97,19 @@ public class BoardServiceImpl implements BoardService{
         return boardDTOList;
     }
 
+    @Transactional
     @Override
-    public BoardDTO getDetail(Long bno) {
+    public long fileRemove(String uuid) {
+
+        File file = fileRepository.findById(uuid).orElseThrow(() -> new EntityNotFoundException());
+
+        fileRepository.deleteById(uuid);
+
+        return file.getBno();
+    }
+
+    @Override
+    public BoardFileDTO getDetail(Long bno) {
         // findById => where bno = #{bno}
         // Optional<T> : NullPointException 이 발생하지 않도록 도와줌.
         // optional.isEmpty() : null 일 경우 true / false
@@ -93,8 +117,19 @@ public class BoardServiceImpl implements BoardService{
         // Optional.get() : 객체 가져오기.
 
         Optional<Board> optional = boardRepository.findById(bno);
-        if(optional.isPresent()){
-            return convertEntityToDto(optional.get());
+        if (optional.isPresent()) {
+            BoardDTO boardDTO = convertEntityToDto(optional.get());
+
+            // file bno 에 일치하는 파일 리스트 가져오기
+            List<File> fileList = fileRepository.findByBno(bno);
+            List<FileDTO> fileDTOList = fileList.stream()
+                    .map(this::convertEntityToDto)
+                    .toList();
+
+        BoardFileDTO boardFileDTO = new BoardFileDTO(boardDTO, fileDTOList);
+
+        return boardFileDTO;
+
         }
 
         return null;
@@ -127,16 +162,21 @@ public class BoardServiceImpl implements BoardService{
     // UPDATE 방식 1.
     @Transactional
     @Override
-    public void boardModify(BoardDTO boardDTO) {
+    public void boardModify(BoardFileDTO boardFileDTO) {
 //        Optional<Board> optional = boardRepository.findById(boardDTO.getBno());
 //        optional.orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시글"));
 //        Board board = optional.get();
 
-        Board board = boardRepository.findById(boardDTO.getBno())
+        Board board = boardRepository.findById(boardFileDTO.getBoardDTO().getBno())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시글"));
-                
-        board.setTitle(boardDTO.getTitle());
-        board.setContent(boardDTO.getContent());
+
+        board.setTitle(boardFileDTO.getBoardDTO().getTitle());
+        board.setContent(boardFileDTO.getBoardDTO().getContent());
+
+
+        long bno = fileSave(boardFileDTO.getFileList(), board.getBno());
+
+
     }
 
 
@@ -159,8 +199,19 @@ public class BoardServiceImpl implements BoardService{
 //    }
 //----------------------------------------------------------------------------------------------------------------------
 
+    private long fileSave(List<FileDTO> fileList, long bno){
+
+        if(bno > 0 && fileList != null){
+            for(FileDTO fileDTO : fileList){
+                fileDTO.setBno(bno);
+                bno = fileRepository.save(convertDtoToEntity(fileDTO)).getBno();
+            }
+        }
+        return bno;
+    }
 
 }
+
 
 
 
