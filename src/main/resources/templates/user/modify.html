@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}"
+>
+
+<div class="container-md" layout:fragment="content">
+  <h3>User Modify Page</h3>
+  <th:block th:with="auth=${#authentication.getPrincipal}">
+    <th:block th:with="userDTO=${auth.userDTO}">
+
+      <form action="/user/update" method="post">
+
+        <div class="card" style="width: 24rem; margin-top : 20px;">
+
+          <img th:src="@{/image/choonsic.jpg}" class="card-img-top" alt="...">
+
+          <div class="card-header text-bg-success">
+            ROLE
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item" th:each="avo:${userDTO.authList}">[[${avo.auth}]]</li>
+          </ul>
+
+          <div class="card-header text-bg-primary">
+            아이디
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item"><input class="form-control" name="email" type="text" readonly th:value="${userDTO.email}"></li>
+          </ul>
+          <div class="card-header text-bg-primary">
+            닉네임
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item"><input class="form-control" name="nickName" type="text" th:value="${userDTO.nickName}"></li>
+
+            <div class="card-header text-bg-primary">
+              비밀번호
+            </div>
+
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item"><input class="form-control" name="pwd" type="password"></li>
+            </ul>
+
+            <div class="card-header text-bg-info">
+              가입일(마지막 로그인)
+            </div>
+
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">[[${userDTO.regDate}]]([[${userDTO.lastLogin}]])</li>
+            </ul>
+          </ul>
+
+        </div>
+
+        <div class="card-body">
+          <button type="submit" class="btn btn-primary">정보수정</button>
+        </div>
+
+      </form>
+
+      <form action="/user/remove" method="post">
+        <input type="hidden" name=email th:value="${userDTO.email}">
+        <button type="submit" class="btn btn-danger">회원탈퇴</button>
+      </form>
+
+    </th:block>
+  </th:block>
+
+</div>

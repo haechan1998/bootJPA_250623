@@ -161,6 +161,9 @@ public class BoardController {
         return bno > 0 ? "1" : "0";
     }
 
+    @GetMapping("/testToast")
+    public void testToast(){}
+
 
 
 

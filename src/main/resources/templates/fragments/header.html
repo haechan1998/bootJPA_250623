@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 >
 
 <!--/* th:fragment="이름" : layout 에서 사용 할 조각 */-->
@@ -16,18 +17,39 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" th:href="@{/board/register}">Board Register</a>
             </li>
+
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" th:href="@{/board/list}">Board List</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Home</a>
+
+            <li class="nav-item" sec:authorize="isAnonymous()">
+              <a class="nav-link active" aria-current="page" th:href="@{/user/join}">Join</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Home</a>
+
+            <li class="nav-item" sec:authorize="isAnonymous()">
+              <a class="nav-link active" aria-current="page" th:href="@{/user/login}">Login</a>
             </li>
+
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" th:href="@{/board/testToast}">testToast</a>
+            </li>
+
+            <li class="nav-item" sec:authorize="isAuthenticated()">
+              <a class="nav-link active" aria-current="page" th:href="@{/user/modify}">[[${#authentication.name}]]회원정보수정</a>
+            </li>
+
+            <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
+              <a class="nav-link active" aria-current="page" th:href="@{/user/list}">UserList</a>
+            </li>
+
+            <li class="nav-item" sec:authorize="isAuthenticated()">
+              <a class="nav-link active" aria-current="page" th:href="@{/user/logout}">Logout</a>
+            </li>
+
           </ul>
         </div>
       </div>
