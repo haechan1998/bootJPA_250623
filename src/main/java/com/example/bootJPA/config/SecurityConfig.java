@@ -31,7 +31,7 @@ public class SecurityConfig {
 
         // csrf => disabled
         return http
-                .csrf(csrf -> csrf.disable())
+//                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
                                 "/","/dist/**","/js/**","/image/**","/upload/**",

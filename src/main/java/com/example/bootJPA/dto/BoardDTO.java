@@ -19,6 +19,7 @@ public class BoardDTO {
     private String writer;
     private String content;
     private LocalDateTime regDate, modDate;
+    private int fileQty, cmtQty, readCount;
 
     public String getRegTimeOrDate(){
         return timeOrDate(regDate);

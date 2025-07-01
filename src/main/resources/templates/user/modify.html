@@ -12,6 +12,9 @@
 
       <form action="/user/update" method="post">
 
+        <!-- CSRF토큰 추가 -->
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
         <div class="card" style="width: 24rem; margin-top : 20px;">
 
           <img th:src="@{/image/choonsic.jpg}" class="card-img-top" alt="...">

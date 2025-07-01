@@ -34,6 +34,10 @@ public class BoardServiceImpl implements BoardService{
         // save() : 저장
         // entity 객체를 파라미터로 전송
         BoardDTO boardDTO = boardFileDTO.getBoardDTO();
+        if(boardFileDTO.getFileList() != null){
+            boardDTO.setFileQty(boardFileDTO.getFileList().size());
+        }
+
         Long bno =  boardRepository.save(convertDtoToEntity(boardDTO)).getBno();
         log.info(">> boardimpl BoardDto > {}", boardDTO);
 
@@ -103,11 +107,16 @@ public class BoardServiceImpl implements BoardService{
 
         File file = fileRepository.findById(uuid).orElseThrow(() -> new EntityNotFoundException());
 
+        Board board = boardRepository.findById(file.getBno()).orElseThrow(() -> new EntityNotFoundException());
+        board.setFileQty(board.getFileQty() - 1);
+
         fileRepository.deleteById(uuid);
 
         return file.getBno();
     }
 
+
+    @Transactional
     @Override
     public BoardFileDTO getDetail(Long bno) {
         // findById => where bno = #{bno}
@@ -118,6 +127,10 @@ public class BoardServiceImpl implements BoardService{
 
         Optional<Board> optional = boardRepository.findById(bno);
         if (optional.isPresent()) {
+            int count = optional.get().getReadCount()+1;
+
+            // @Transactional Annotation 을 사용하면 save 없이 set 으로 값 변동이 일어날 경우 자동 save
+            optional.get().setReadCount(count);
             BoardDTO boardDTO = convertEntityToDto(optional.get());
 
             // file bno 에 일치하는 파일 리스트 가져오기
@@ -172,6 +185,9 @@ public class BoardServiceImpl implements BoardService{
 
         board.setTitle(boardFileDTO.getBoardDTO().getTitle());
         board.setContent(boardFileDTO.getBoardDTO().getContent());
+        if(boardFileDTO.getFileList() != null){
+            board.setFileQty(board.getFileQty() + boardFileDTO.getFileList().size());
+        }
 
 
         long bno = fileSave(boardFileDTO.getFileList(), board.getBno());

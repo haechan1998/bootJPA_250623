@@ -2,6 +2,7 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout/layout}"
 >
 
@@ -9,6 +10,8 @@
   <h1>NO.[[${boardDTO.bno}]] Board Detail Page</h1>
 
   <form action="/board/modify" method="post" id="modForm" enctype="multipart/form-data">
+    <!-- CSRF토큰 추가 -->
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
     <input type="hidden" name="bno" th:value="${boardDTO.bno}">
     <div class="mb-3">
       <label for="t" class="form-label">제목</label>
@@ -37,7 +40,9 @@
 
 
 
-
+  <div>
+    파일 : [[${boardDTO.fileQty}]]개
+  </div>
   <!-- 파일 출력 라인 시작-->
   <div id="fileList" class="mb-3">
     <ul class="list-group list-group-flush">
@@ -82,18 +87,23 @@
   </div>
 
   <!-- 파일 출력 라인 끝-->
-
-    <button type="button" id="listBtn" class="btn btn-primary">목록</button>
-    <button type="button" id="modBtn" class="btn btn-info">수정</button>
-    <button type="button" id="delBtn" class="btn btn-danger">삭제</button>
+  <button type="button" id="listBtn" class="btn btn-primary">목록</button>
+  <th:block sec:authorize="isAuthenticated()" th:with="auth=${#authentication}">
+    <th:block th:if="${auth.name == boardDTO.writer}">
+      <button type="button" id="modBtn" class="btn btn-info">수정</button>
+      <button type="button" id="delBtn" class="btn btn-danger">삭제</button>
+    </th:block>
+  </th:block>
 
   </form>
 
-
+  <div>
+    댓글 : [[${boardDTO.cmtQty}]]개
+  </div>
   <!-- comment line start-->
   <!-- post -->
-    <div class="input-group mb-3" style="margin-top:20px">
-      <span class="input-group-text" id="cmtWriter">tester</span>
+    <div class="input-group mb-3" style="margin-top:20px" sec:authorize="isAuthenticated()">
+      <span class="input-group-text" id="cmtWriter">[[${#authentication.name}]]</span>
       <input type="text" class="form-control" id="cmtText" placeholder="comment..." aria-label="Username" aria-describedby="basic-addon1">
       <button type="button" id="cmtAddBtn" class="btn btn-secondary">post</button>
     </div>
@@ -137,6 +147,13 @@
       const bnoValue = [[${bdto.bno}]];
     </script>
   </th:block>
+  <th:blcok sec:authorize="isAuthenticated()"
+            th:with="authEmail=${#authentication.name}">
+    <script th:inline="javascript">
+      const userEmail = [[${authEmail}]];
+      console.log(userEmail);
+    </script>
+  </th:blcok>
   <script th:src="@{/js/boardComment.js}"></script>
   <script th:src="@{/js/boardDetail.js}"></script>
   <script>

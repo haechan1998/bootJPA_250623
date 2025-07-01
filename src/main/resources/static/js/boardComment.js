@@ -2,6 +2,9 @@ console.log("boardComment.js in");
 
 const cmtWriter = document.getElementById("cmtWriter");
 const cmtText = document.getElementById("cmtText");
+const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+const csrfHeader = document.querySelector('meta[name="_csrf.header"]').getAttribute('content');
+
 
 
 // 일반 함수 --------------------
@@ -18,6 +21,7 @@ document.getElementById("cmtAddBtn").addEventListener("click", () => {
     }
 
     commentPostToServer(commentData).then(result => {
+        console.log(commentData);
         if(result == "1"){
             alert("댓글 등록 성공");
         }else{
@@ -51,14 +55,16 @@ function spreadCommentList(bnoValue, page=1){
                     li += `${cvo.content}`;
                     li += `</div>`;
                     li += `<span class="badge rounded-pill text-bg-info">${cvo.regDate}</span>`;
-                    li += `<button
-                    type="button"
-                    class="btn btn-outline-primary mod btn-sm"
-                    data-bs-toggle="modal" data-bs-target="#myModal"
-                    >
-                    수정
-                    </button>`; // 수정버튼
-                    li += `<button type="button" class="btn btn-outline-warning del btn-sm">삭제</button>`; // 삭제버튼
+                    if(cvo.writer == userEmail){
+                        li += `<button
+                        type="button"
+                        class="btn btn-outline-primary mod btn-sm"
+                        data-bs-toggle="modal" data-bs-target="#myModal"
+                        >
+                        수정
+                        </button>`; // 수정버튼
+                        li += `<button type="button" class="btn btn-outline-warning del btn-sm">삭제</button>`; // 삭제버튼
+                    }
                     li += `</li>`;
 
                 ul.innerHTML += li;
@@ -154,7 +160,8 @@ async function commentPostToServer(commentData) {
         const config = {
             method : "post",
             headers : {
-                'Content-Type' : 'application/json; charset=utf-8'
+                'Content-Type' : 'application/json; charset=utf-8',
+                [csrfHeader] : csrfToken
             },
             body : JSON.stringify(commentData)
         }
@@ -190,7 +197,7 @@ async function commentDeleteToServer(cnoValue) {
     try {
         
         const url = `/comment/delete/${cnoValue}`
-        const resp = await fetch(url, {method : 'delete'});
+        const resp = await fetch(url, {method : 'delete', headers : {[csrfHeader] : csrfToken}});
         const result = resp.text();
 
         return result;
@@ -210,7 +217,8 @@ async function commentModifyToServer(cmtModData) {
         const config = {
             method : 'put',
             headers : {
-                'Content-type' : 'application/json; charset=utf-8'
+                'Content-type' : 'application/json; charset=utf-8',
+                [csrfHeader] : csrfToken
             },
             body : JSON.stringify(cmtModData)
         }

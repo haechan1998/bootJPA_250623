@@ -19,6 +19,7 @@ public class CommentController {
 
     @PostMapping("/post")
     public ResponseEntity<String> post(@RequestBody CommentDTO commentDTO) {
+        log.info("commentController commentDTO >> {}", commentDTO);
 
         Long cno = commentService.insertComment(commentDTO);
 

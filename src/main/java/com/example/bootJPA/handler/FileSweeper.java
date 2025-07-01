@@ -31,7 +31,7 @@ public class FileSweeper {
     private final String BASE_PATH = "D:\\web_java_chc\\_myProject\\_java\\_fileUpload\\";
 
     // cron 방식 = 초 분 시 일 월 요일 년도(생략가능)
-    @Scheduled(cron = "0 13 17 * * *")
+    @Scheduled(cron = "0 0 20 * * *")
     public void fileSweeper(){
         log.info("============= FileSweeper Running start > {} =================", LocalDateTime.now());
         // DB 에 등록되어있는 모든 파일 목록을 가져오기

@@ -42,4 +42,13 @@ public class Board extends TimeBase {
     @Column(length = 2000, nullable = false)
     private String content;
 
+    @Column(name = "read_count", columnDefinition = "integer default 0")
+    private int readCount;
+
+    @Column(name = "cmt_qty", columnDefinition = "integer default 0")
+    private int cmtQty;
+
+    @Column(name = "file_qty", columnDefinition = "integer default 0")
+    private int fileQty;
+
 }

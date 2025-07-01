@@ -3,8 +3,10 @@ package com.example.bootJPA.controller;
 import com.example.bootJPA.dto.BoardDTO;
 import com.example.bootJPA.dto.BoardFileDTO;
 import com.example.bootJPA.dto.FileDTO;
+import com.example.bootJPA.entity.Board;
 import com.example.bootJPA.handler.FileHandler;
 import com.example.bootJPA.handler.PagingHandler;
+import com.example.bootJPA.handler.ToastHandler;
 import com.example.bootJPA.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -164,6 +166,29 @@ public class BoardController {
     @GetMapping("/testToast")
     public void testToast(){}
 
+    @ResponseBody
+    @PostMapping("/toast")
+    public String toastImageUpload(
+            @RequestParam MultipartFile image
+    ){
+        log.info(">>>>>>>>>>>image", image);
+        ToastHandler toastHandler = new ToastHandler();
+        String dir = toastHandler.imageUpload(image);
+        log.info(">>>>>>>>>testToast");
+        log.info("toast file 경로 >> {}", dir);
+
+        return dir;
+    }
+
+    @ResponseBody
+    @PostMapping("/toastPost")
+    public String toastPost(
+            @RequestBody BoardDTO boardDTO
+            ){
+        log.info("toast BoardDTO >>>> {}", boardDTO);
+
+
+    }
 
 
 
