@@ -14,8 +14,11 @@ document.getElementById("delBtn").addEventListener("click", () => {
 // modBtn 을 클릭하면 title, content 만 readonly 풀기
 document.getElementById("modBtn").addEventListener("click", () => {
     document.getElementById("t").readOnly = false;
-    document.getElementById("c").readOnly = false;
     document.getElementById("t").focus(); // title 에 포커스 주기
+    document.getElementById("toast-content").remove();
+    document.getElementById("editor").style.display = "block";
+    
+    
 
     // 실제 submit 기능을 하는 버튼 추가
     let modBtn = document.createElement("button");
@@ -148,3 +151,94 @@ document.addEventListener('change', (e) => {
     }
 
 })
+
+// toast 내부 내용 수정하기
+console.log(toastContent);
+const turndownService = new TurndownService();
+const markdown = turndownService.turndown(toastContent);
+console.log(markdown);
+
+// toast editor 수정시 나타나게 할 editor 만들어놓기.
+const editor = new toastui.Editor({
+    el: document.querySelector('#editor'),
+    height : '500px',
+    initialValue : markdown,
+    initialEditType : 'markdown',
+    previewStyle : 'vertical',
+    language : 'ko-KR',
+    placeholder : '내용을 입력해주세요.',
+
+
+    // addImageBlobHook 사용해서 toast 내부의 이미지를 폴더에 저장하기.
+    hooks : {
+    addImageBlobHook(blob, callback){
+        console.log(blob);
+        console.log(callback);
+
+        renderingImage(blob).then(result => {
+        console.log(result);
+        callback(result);
+        })
+
+    }
+
+    }
+
+});
+
+// regBtn 을 눌렀을 경우 비동기로 content 의 내용을 수정
+document.getElementById("modForm").addEventListener("submit", async (e) => {
+
+        e.preventDefault(); // 비동기가 실행하기전 submit을 막기
+
+        const contentData = {
+            bno : bnoValue,
+            content : editor.getHTML()
+          }
+    
+          console.log(contentData);
+        
+          await editorContentModifyToServer(contentData).then(result => {
+        
+            if(result == "1"){
+              alert("저장 성공");
+              // location.href("/board/list");
+              e.target.submit(); // 비동기 실행이 끝나면 form제출
+            }else{
+              alert("저장 실패...");
+            }
+        
+          })
+
+
+})
+
+async function editorContentModifyToServer(contentData) {
+
+    try {
+      
+      const url = "/board/toastModify";
+      const config = {
+        method : "put",
+        headers : {
+          [csrfHeader] : csrfToken,
+          'Content-type' : 'application/json; charset=utf-8',
+        },
+        body : JSON.stringify(contentData)
+      }
+  
+      const resp = await fetch(url, config);
+      const result = await resp.text();
+      
+      // result 의 값이 1이면 저장 성공하고 list 페이지로 보내기
+      // 저장 실패시 alert로 실패 했다는 메세지 날리기
+      return result;
+  
+    } catch (error) {
+      console.log(error);
+    }
+    
+  }
+
+
+

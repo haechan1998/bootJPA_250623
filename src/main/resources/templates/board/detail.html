@@ -5,6 +5,12 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout/layout}"
 >
+<head>
+  <style>
+    img {max-width : 500px;}
+  </style>
+</head>
+
 
 <div class="container-md" layout:fragment="content" th:with="boardDTO=${boardFileDTO.boardDTO}">
   <h1>NO.[[${boardDTO.bno}]] Board Detail Page</h1>
@@ -33,11 +39,10 @@
       <input type="text" class="form-control" name="writer" th:value="${boardDTO.writer}" id="w" readonly>
     </div>
 
-    <div class="mb-3">
-      <label for="c" class="form-label">내용</label>
-      <textarea type="text" class="form-control" name="content" rows="5" id="c" readonly>[[${boardDTO.content}]]</textarea>
+    <!--content-->
+    <div class="mb-3" th:utext="${boardDTO.content}" id="toast-content">
     </div>
-
+    <div id="editor" style="display : none;"></div>
 
 
   <div>
@@ -140,8 +145,12 @@
 <!-- comment line end -->
 
 
-
 <!--script line start-->
+  <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+  <script src="https://unpkg.com/turndown/dist/turndown.js"></script>
+  <script th:inline="javascript">
+    const toastContent = [[${boardDTO.content}]];
+  </script>
   <th:block th:with="bdto=${boardDTO}">
     <script th:inline="javascript">
       const bnoValue = [[${bdto.bno}]];

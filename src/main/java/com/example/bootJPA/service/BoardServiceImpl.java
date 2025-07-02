@@ -115,6 +115,24 @@ public class BoardServiceImpl implements BoardService{
         return file.getBno();
     }
 
+    @Override
+    public Long toastInsert(BoardDTO boardDTO) {
+
+        Long bno = boardRepository.save(convertDtoToEntity(boardDTO)).getBno();
+
+        return bno;
+    }
+
+    @Transactional
+    @Override
+    public Long toastModify(BoardDTO boardDTO) {
+
+        Board board = boardRepository.findById(boardDTO.getBno()).orElseThrow(() -> new EntityNotFoundException());
+        board.setContent(boardDTO.getContent());
+
+        return boardDTO.getBno();
+    }
+
 
     @Transactional
     @Override
@@ -184,7 +202,9 @@ public class BoardServiceImpl implements BoardService{
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시글"));
 
         board.setTitle(boardFileDTO.getBoardDTO().getTitle());
-        board.setContent(boardFileDTO.getBoardDTO().getContent());
+
+        // 기존 content 수정은 비동기로 진행...
+//        board.setContent(boardFileDTO.getBoardDTO().getContent());
         if(boardFileDTO.getFileList() != null){
             board.setFileQty(board.getFileQty() + boardFileDTO.getFileList().size());
         }

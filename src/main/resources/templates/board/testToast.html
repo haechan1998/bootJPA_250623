@@ -8,20 +8,19 @@
 <div class="container-md" layout:fragment="content">
   <h1>My Spring Boot_JPA Project</h1>
   <div class="mb-3">
-    <label for="t" class="form-label">제목</label>
+    <label for="toastTitle" class="form-label">제목</label>
     <input type="text" class="form-control" name="title" id="toastTitle" placeholder="title..">
   </div>
 
   <div class="mb-3">
-    <label for="w" class="form-label">작성자</label>
+    <label for="toastWriter" class="form-label">작성자</label>
     <input type="text" class="form-control" name="writer" id="toastWriter" th:value="${#authentication.name}" readonly>
   </div>
-  <div id="editor">
 
-  </div>
+  <div id="editor"></div>
+
   <button type="button" id="testBtn" class="btn btn-info">확인하기</button>
   <button type="button" id="toastSaveBtn" class="btn btn-success">저장하기</button>
-
 
 <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 <script th:src="@{/js/toast.js}"></script>

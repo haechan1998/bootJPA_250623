@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}"
+>
+
+<div class="container-md" layout:fragment="content">
+  <h1>toast View Page</h1>
+
+  <div id="viewer"></div>
+  <div>
+    <p>저장해보기</p><ul><li><p>HTML</p></li><li><p>test</p></li><li><p>한글</p></li><li><p><img src="/upload/2025/07/02/4196b92f-af2a-48d3-9998-9749158d8c90_%EB%A9%94%EC%9D%B8%EB%AA%A8%EC%9E%90.jpg" contenteditable="false"><br></p></li></ul>
+  </div>
+
+  <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+  <script th:src="@{/js/toastView.js}"></script>
+</div>

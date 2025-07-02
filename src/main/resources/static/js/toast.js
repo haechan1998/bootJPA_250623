@@ -6,6 +6,7 @@ const csrfHeader = document.querySelector('meta[name="_csrf.header"]').getAttrib
 
 
 
+// toast editor
 const editor = new toastui.Editor({
   el: document.querySelector('#editor'),
   height : '500px',
@@ -33,10 +34,21 @@ const editor = new toastui.Editor({
 
 });
 
+
+
+
+
 // 마크다운 확인용
 document.getElementById("testBtn").addEventListener("click", () => {
 
+  const boardData = {
+    title : document.getElementById("toastTitle").value,
+    writer : document.getElementById("toastWriter").value,
+    content : editor.getMarkdown()
+  }
+  console.log(boardData); 
   console.log(editor.getMarkdown());
+  console.log(editor.getHTML());
 
 })
 
@@ -44,14 +56,17 @@ document.getElementById("testBtn").addEventListener("click", () => {
 document.getElementById("toastSaveBtn").addEventListener("click", () => {
   
   const boardData = {
+    title : document.getElementById("toastTitle").value,
     writer : document.getElementById("toastWriter").value,
-    title : document.getElementById("toastTitle").value
+    content : editor.getHTML()
   }
+  console.log(boardData);
 
   editorContentToServer(boardData).then(result => {
 
     if(result == "1"){
-      location.href("/board/list");
+      alert("저장 성공");
+      // location.href("/board/list");
     }else{
       alert("저장 실패...");
     }
@@ -98,11 +113,12 @@ async function editorContentToServer(boardData) {
       headers : {
         [csrfHeader] : csrfToken,
         'Content-type' : 'application/json; charset=utf-8',
-      }
+      },
+      body : JSON.stringify(boardData)
     }
 
     const resp = await fetch(url, config);
-    const result = resp.text();
+    const result = await resp.text();
     
     // result 의 값이 1이면 저장 성공하고 list 페이지로 보내기
     // 저장 실패시 alert로 실패 했다는 메세지 날리기
@@ -113,3 +129,5 @@ async function editorContentToServer(boardData) {
   }
   
 }
+
+// get

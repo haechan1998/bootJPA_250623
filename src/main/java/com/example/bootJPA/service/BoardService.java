@@ -22,7 +22,7 @@ public interface BoardService {
     * 화면에서 가져온 BoardDTO 객체를 저장을 위한 Board 테이블 객체로 변환
     * */
 
-    default Board convertDtoToEntity(BoardDTO boardDTO){
+    default Board convertDtoToEntity(BoardDTO boardDTO) {
         return Board.builder()
                 .bno(boardDTO.getBno())
                 .title(boardDTO.getTitle())
@@ -95,4 +95,7 @@ public interface BoardService {
 
     long fileRemove(String uuid);
 
+    Long toastInsert(BoardDTO boardDTO);
+
+    Long toastModify(BoardDTO boardDTO);
 }

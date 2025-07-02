@@ -8,8 +8,8 @@
 
 <div class="container-md" layout:fragment="content">
   <h1>Board Register Page</h1>
-  <form action="/board/register" method="post" enctype="multipart/form-data">
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
     <div class="mb-3">
       <label for="t" class="form-label">제목</label>
       <input type="text" class="form-control" name="title" id="t" placeholder="title..">
@@ -20,10 +20,11 @@
       <input type="text" class="form-control" name="writer" id="w" th:value="${#authentication.name}" readonly>
     </div>
 
-    <div class="mb-3">
-      <label for="c" class="form-label">내용</label>
-      <textarea type="text" class="form-control" name="content" rows="5" id="c" placeholder="content.."></textarea>
-    </div>
+    <div id="editor"></div>
+
+<!--    <button type="button" id="testBtn" class="btn btn-info">확인하기</button>-->
+<!--    <button type="button" id="toastSaveBtn" class="btn btn-success">저장하기</button>-->
+
 
 
     <!--file 추가 라인-->
@@ -35,8 +36,9 @@
     <div class="mb-3" id="fileList">
     </div>
 
-    <button type="submit" class="btn btn-primary" id="regBtn">저장</button>
+    <button type="button" class="btn btn-primary" id="regBtn">저장</button>
+
+    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
     <script th:src="@{/js/boardRegister.js}"></script>
-  </form>
 </div>
 

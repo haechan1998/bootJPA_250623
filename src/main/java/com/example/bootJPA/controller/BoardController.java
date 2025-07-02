@@ -3,7 +3,6 @@ package com.example.bootJPA.controller;
 import com.example.bootJPA.dto.BoardDTO;
 import com.example.bootJPA.dto.BoardFileDTO;
 import com.example.bootJPA.dto.FileDTO;
-import com.example.bootJPA.entity.Board;
 import com.example.bootJPA.handler.FileHandler;
 import com.example.bootJPA.handler.PagingHandler;
 import com.example.bootJPA.handler.ToastHandler;
@@ -31,10 +30,11 @@ public class BoardController {
     @GetMapping("/register")
     public void register(){}
 
+    @ResponseBody
     @PostMapping("/register")
     public String register(
-            BoardDTO boardDTO,
-            @RequestParam(name = "files", required = false) MultipartFile[] files
+            @RequestPart("boardDTO") BoardDTO boardDTO,
+            @RequestPart(name = "files", required = false) MultipartFile[] files
     ){
         // 파일이 있는 register
 
@@ -44,8 +44,9 @@ public class BoardController {
             fileList = fileHandler.uploadFiles(files);
         }
         log.info(">>>> fileList > {}", fileList);
+        log.info(">>>> register BoardDTO > {}", boardDTO);
         Long bno = boardService.insert(new BoardFileDTO(boardDTO, fileList));
-        return "redirect:/board/list";
+        return bno > 0 ? "1" : "0";
 
     }
 
@@ -187,8 +188,24 @@ public class BoardController {
             ){
         log.info("toast BoardDTO >>>> {}", boardDTO);
 
+        Long isOk = boardService.toastInsert(boardDTO);
 
+        return isOk > 0 ? "1" : "0";
     }
+
+    @GetMapping("/toastView")
+    public void toastView(){}
+
+    @ResponseBody
+    @PutMapping("/toastModify")
+    public String toastModify(@RequestBody BoardDTO boardDTO){
+
+        log.info("toastModify boardDTO >>>>> {}", boardDTO);
+        Long isOk = boardService.toastModify(boardDTO);
+
+        return isOk > 0 ? "1" : "0";
+    }
+
 
 
 
