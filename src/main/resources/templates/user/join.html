@@ -15,23 +15,27 @@
       <label for="e" class="form-label fw-bold">이메일</label>
       <!-- 중복검사 -->
       <input type="text" class="form-control w-50" name="email" id="e" placeholder="email@email.com">
-      <button class="btn btn-outline-info btn-sm" id="emailIsCheck">이메일 중복검사</button>
+      <button type="button" class="btn btn-outline-info btn-sm" id="isEmailCheckBtn">이메일 중복검사</button>
     </div>
 
     <div class="mb-3">
       <!-- 중복검사 -->
       <label for="n" class="form-label fw-bold">닉네임</label>
       <input type="text" class="form-control w-50" name="nickName" id="n" placeholder="nickName">
-      <button class="btn btn-outline-info btn-sm" id="nickIsCheck">닉네임 중복검사</button>
+      <button type="button" class="btn btn-outline-info btn-sm" id="isNickCheckBtn">닉네임 중복검사</button>
     </div>
 
     <div class="mb-3">
       <label for="p" class="form-label fw-bold">패스워드</label>
-      <input type="text" class="form-control wd-50" name="pwd" id="p" placeholder="password">
+      <input type="text" class="form-control w-50" name="pwd" id="p" placeholder="영문, 숫자, 특수문자 포함 8자리 이상">
     </div>
 
-    <button type="submit" class="btn btn-primary" id="signupBtn">회원가입</button>
+    <button type="submit" class="btn btn-primary" id="signupBtn" disabled>회원가입</button>
 
   </form>
+
+  <script th:src="@{/js/userJoin.js}">
+
+  </script>
 
 </div>

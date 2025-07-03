@@ -182,7 +182,7 @@ async function commentGetListFromServer(bnoValue, page) {
     try {
         const url = `/comment/list/${bnoValue}/${page}`;
         const resp = await fetch(url);
-        const result = resp.json();
+        const result = await resp.json();
 
         return result;
 

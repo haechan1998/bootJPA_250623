@@ -133,6 +133,26 @@ public class BoardServiceImpl implements BoardService{
         return boardDTO.getBno();
     }
 
+    // 조회수순
+    @Override
+    public List<BoardDTO> getTop5MostViewedBoardList() {
+
+        List<Board> boardList = boardRepository.findTop5ByOrderByReadCountDesc();
+        List<BoardDTO> boardDTOList = boardList.stream().map(board -> convertEntityToDto(board)).toList();
+
+        return boardDTOList;
+    }
+
+    // 최근글
+    @Override
+    public List<BoardDTO> getLatest5BoardList() {
+
+        List<Board> boardList = boardRepository.findTop5ByOrderByBnoDesc();
+        List<BoardDTO> boardDTOList = boardList.stream().map(board -> convertEntityToDto(board)).toList();
+
+        return boardDTOList;
+    }
+
 
     @Transactional
     @Override

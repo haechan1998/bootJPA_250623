@@ -13,9 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -108,6 +106,34 @@ public class UserController {
         if(auth != null){
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
+    }
+
+    // 이메일
+    @ResponseBody
+    @GetMapping("/isCheckEmail/{email}")
+    public String emailCheck(@PathVariable("email") String email){
+
+        log.info("emailCheck in");
+        log.info("emailCheck email >> {}", email);
+        UserDTO userDTO = new UserDTO();
+        userDTO.setEmail(email);
+        int isOk = userService.getUserEmail(userDTO);
+
+        // isOk 가 1이면 이미 존재하는 이메일.
+        return isOk == 0 ? "1" : "0";
+    }
+
+    // 닉네임
+    @ResponseBody
+    @GetMapping("/isCheckNick/{nick}")
+    public String nickCheck(@PathVariable("nick") String nick){
+        log.info("nickCheck in");
+
+        UserDTO userDTO = new UserDTO();
+        userDTO.setNickName(nick);
+        int isOk = userService.getUserNick(userDTO);
+
+        return isOk == 0 ? "1" : "0";
     }
 
 

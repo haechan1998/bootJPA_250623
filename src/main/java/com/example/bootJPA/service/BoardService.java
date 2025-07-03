@@ -98,4 +98,8 @@ public interface BoardService {
     Long toastInsert(BoardDTO boardDTO);
 
     Long toastModify(BoardDTO boardDTO);
+
+    List<BoardDTO> getTop5MostViewedBoardList();
+
+    List<BoardDTO> getLatest5BoardList();
 }

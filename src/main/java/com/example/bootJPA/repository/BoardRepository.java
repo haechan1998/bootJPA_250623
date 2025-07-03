@@ -17,5 +17,11 @@ public interface BoardRepository extends JpaRepository<Board, Long>, BoardCustom
     @Query("select b from Board b where b.writer = ?1") // 테이블 명은 Entity 클래스로 해야한다.
     List<Board> findByWriterQuery(String writer);
 
+    // 최근 5개 글
+    List<Board> findTop5ByOrderByBnoDesc();
+    
+    // 조회수 top 5 글
+    List<Board> findTop5ByOrderByReadCountDesc();
+
 
 }

@@ -124,4 +124,26 @@ public class UserServiceImpl implements UserService{
 
         return userDTOList;
     }
+
+    @Override
+    public int getUserEmail(UserDTO userDTO) {
+        
+        Optional<User> optional = userRepository.findById(userDTO.getEmail());
+        if(optional.isPresent()){
+            return 1;
+        }
+        return 0;
+
+    }
+
+    @Override
+    public int getUserNick(UserDTO userDTO) {
+        
+        // 닉네임 findByNick 으로 찾기
+        Optional<User> optional = userRepository.findByNickName((userDTO.getNickName()));
+        if(optional.isPresent()){
+            return 1;
+        }
+        return 0;
+    }
 }

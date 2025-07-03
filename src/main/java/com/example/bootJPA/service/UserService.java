@@ -61,4 +61,8 @@ public interface UserService {
     String removeUser(String name);
 
     Object getList();
+
+    int getUserEmail(UserDTO userDTO);
+
+    int getUserNick(UserDTO userDTO);
 }
