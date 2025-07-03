@@ -10,9 +10,10 @@ JPA 스프링 프로젝트 (25.06.23 ~ 25.07.03)
 * ORM : JPA
 
 **1. User(Login) security**
-dependencies 목록
-
-
+ - dependency
+ - ----------
+ - implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+ - implementation 'org.springframework.boot:spring-boot-starter-security'
 
 **2. toast ui**
 
